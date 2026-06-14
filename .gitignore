@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Banco local (cada máquina tem o seu)
+*.db
+*.db-shm
+*.db-wal
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Ambiente virtual
+venv/
+env/
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
