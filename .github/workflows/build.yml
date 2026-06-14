@@ -1,0 +1,57 @@
+name: Build Athive Sistema .exe
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:   # permite rodar manualmente com um clique
+
+jobs:
+  build-windows:
+    runs-on: windows-latest   # máquina Windows real na nuvem (grátis)
+
+    steps:
+      # 1. Baixar o código do repositório
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      # 2. Instalar Python 3.11
+      - name: Instalar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # 3. Instalar todas as dependências
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install supabase matplotlib reportlab pillow pyinstaller
+
+      # 4. Compilar o .exe com PyInstaller
+      - name: Compilar .exe
+        run: |
+          pyinstaller `
+            --onefile `
+            --windowed `
+            --name "Athive Sistema" `
+            --add-data "database/schema.sql;database" `
+            --hidden-import "supabase" `
+            --hidden-import "postgrest" `
+            --hidden-import "gotrue" `
+            --hidden-import "storage3" `
+            --hidden-import "realtime" `
+            --hidden-import "matplotlib" `
+            --hidden-import "matplotlib.backends.backend_tkagg" `
+            --hidden-import "reportlab" `
+            --hidden-import "PIL" `
+            --collect-all "supabase" `
+            --collect-all "gotrue" `
+            --collect-all "postgrest" `
+            main.py
+
+      # 5. Publicar o .exe como artefato para download
+      - name: Publicar artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: Athive-Sistema-Windows
+          path: dist/Athive Sistema.exe
+          retention-days: 30   # fica disponível para download por 30 dias
